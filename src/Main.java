@@ -24,6 +24,7 @@ public class Main {
                 System.out.println("S = Stop");
                 System.out.println("R = Reset");
                 System.out.println("Q = Quit");
+                System.out.print("Enter your choice: ");
 
                 response = scanner.next().toUpperCase();
             }

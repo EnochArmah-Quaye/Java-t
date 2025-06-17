@@ -16,7 +16,6 @@ public class Main {
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
 
-            clip.start();
             String response = "";
 
             while(!response.equals("Q")){
@@ -27,6 +26,14 @@ public class Main {
                 System.out.print("Enter your choice: ");
 
                 response = scanner.next().toUpperCase();
+
+                switch(response){
+                    case "P" -> clip.start();
+                    case "S" -> clip.stop();
+                    case "R" -> clip.setMicrosecondPosition(0);
+                    case "Q" -> clip.close();
+                    default -> System.out.println("Invalid choice");
+                }
             }
         }
         catch(FileNotFoundException e){

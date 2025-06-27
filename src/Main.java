@@ -2,54 +2,37 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime alarmTime = null;
+        String filePath = "C:\\Users\\ENOCH ARMAH-QUAYE\\IdeaProjects\\Java-tutorial\\src\\file_example_WAV_5MG.wav";
 
-        String filePath = "src\\file_example_WAV_5MG.wav";
-        File file = new File(filePath);
+        while(alarmTime == null){
+            try{
+                System.out.print("Enter an alarm time (HH:MM:SS): ");
+                String inputTime = scanner.nextLine();
 
-        try(Scanner scanner = new Scanner(System.in);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file)){
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-
-            String response = "";
-
-            while(!response.equals("Q")){
-                System.out.println("P = Play");
-                System.out.println("S = Stop");
-                System.out.println("R = Reset");
-                System.out.println("Q = Quit");
-                System.out.print("Enter your choice: ");
-
-                response = scanner.next().toUpperCase();
-
-                switch(response){
-                    case "P" -> clip.start();
-                    case "S" -> clip.stop();
-                    case "R" -> clip.setMicrosecondPosition(0);
-                    case "Q" -> clip.close();
-                    default -> System.out.println("Invalid choice");
-                }
+                alarmTime = LocalTime.parse(inputTime, formatter);
+                System.out.println("Alarm set for: " + alarmTime);
+            }
+            catch(DateTimeException e){
+                System.out.println("Invalid format. Please use HH:MM:SS");
             }
         }
-        catch(FileNotFoundException e){
-            System.out.println("Could not locate file");
-        }
-        catch(UnsupportedAudioFileException e){
-            System.out.println("Audio file not supported");
-        }
-        catch (LineUnavailableException e){
-            System.out.println("Unable to access audio resource");
-        }
-        catch(IOException e){
-            System.out.println("Something went wrong");
-        }
-        finally {
-            System.out.println("Bye");
-        }
+
+        AlarmClock alarmClock = new AlarmClock(alarmTime, filePath, scanner);
+        Thread alarmThread = new Thread(alarmClock);
+
+        alarmThread.start();
+
+
     }
 }
